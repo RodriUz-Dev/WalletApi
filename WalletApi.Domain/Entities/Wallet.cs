@@ -12,8 +12,9 @@ namespace WalletApi.Domain.Entities
     {
         [Key]        
         public int Id { get; set; }
+        public string? DocumentId { get; set; }
         [Required(ErrorMessage = "The owner name  {0} is required")]
-        [MinLength(1, ErrorMessage = "The field {0} must have at least {1} character")]
+        [MinLength(1, ErrorMessage = "The field {0} must have at least {1} character")]        
         public string Name { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Balance { get; set; } = 0;
