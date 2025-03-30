@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace WalletApi.Application.DTOs.Request
 {
-    public class WalletRequestDTO
+    public class CreateWalletRequestDTO
     {
-        public int Id { get; set; }
+        public string? DocumentId { get; set; }
         public string? Name { get; set; }        
         public decimal Balance { get; set; } = 0;
         
