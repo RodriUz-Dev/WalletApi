@@ -11,14 +11,15 @@ namespace WalletApi.Domain.Entities
     public class TransactionHistory
     {
         [Key]
-        public int Id { get; set; }
+        public int Id { get; set; }        
         
-
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Amount { get; set; } = 0;
         [Required]
         public string Type { get; set; }
         public DateTime CreatedAt { get; set; }       
+        public int WalletId { get; set; }
+        public virtual Wallet Wallet { get; set; }
 
     }
 }
