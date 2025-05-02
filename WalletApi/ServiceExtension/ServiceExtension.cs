@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
+using WalletApi.Application.Custom;
 using WalletApi.Application.Services;
 using WalletApi.Domain.Interfaces;
 using WalletApi.Infrastructure.Persistence;
@@ -17,7 +18,7 @@ namespace WalletApi.ServiceExtension
                 options.UseSqlServer(configuration.GetConnectionString("ConnectionDB"));
             });
 
-            
+            services.AddSingleton<JwtUtilities>();
             services.AddScoped<IWalletRepository, WalletRepository>();
             services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<ITransactionHistoryRepository, TransactionHistoryRepository>();            

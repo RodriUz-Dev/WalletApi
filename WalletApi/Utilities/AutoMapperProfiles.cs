@@ -11,6 +11,16 @@ namespace WalletApi.Utilities
         {
             ConfigureWalletMapper();
             ConfigureTransactionHistoryMapper();
+            ConfigureUserMapper();
+        }
+
+        private void ConfigureUserMapper()
+        {
+            CreateMap<RegisterRequestDTO, User>();
+            CreateMap<LoginRequestDTO, User>();
+            CreateMap<User, UserResponseDTO>();
+            CreateMap<UserResponseDTO, User>();
+
         }
 
         private void ConfigureWalletMapper()
