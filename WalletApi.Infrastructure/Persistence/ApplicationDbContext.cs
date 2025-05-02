@@ -17,6 +17,7 @@ namespace WalletApi.Infrastructure.Persistence
 
         public virtual DbSet<Wallet> Wallets { get; set; }
         public virtual DbSet<TransactionHistory> TransactionsHistory { get; set; }
+        public virtual DbSet<User> Users { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -27,7 +28,7 @@ namespace WalletApi.Infrastructure.Persistence
         //{
         //    //base.OnModelCreating(modelBuilder);
         //}
-               
+
 
     }
 }
