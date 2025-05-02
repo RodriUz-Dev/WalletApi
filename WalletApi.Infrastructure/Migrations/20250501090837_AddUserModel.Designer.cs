@@ -12,8 +12,8 @@ using WalletApi.Infrastructure.Persistence;
 namespace WalletApi.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250330072944_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250501090837_AddUserModel")]
+    partial class AddUserModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,7 +43,7 @@ namespace WalletApi.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("WalletId")
+                    b.Property<int>("WalletId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -51,6 +51,31 @@ namespace WalletApi.Infrastructure.Migrations
                     b.HasIndex("WalletId");
 
                     b.ToTable("TransactionsHistory");
+                });
+
+            modelBuilder.Entity("WalletApi.Domain.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("WalletApi.Domain.Entities.Wallet", b =>
@@ -67,6 +92,9 @@ namespace WalletApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DocumentId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -81,9 +109,13 @@ namespace WalletApi.Infrastructure.Migrations
 
             modelBuilder.Entity("WalletApi.Domain.Entities.TransactionHistory", b =>
                 {
-                    b.HasOne("WalletApi.Domain.Entities.Wallet", null)
+                    b.HasOne("WalletApi.Domain.Entities.Wallet", "Wallet")
                         .WithMany("TransactionsHistory")
-                        .HasForeignKey("WalletId");
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("WalletApi.Domain.Entities.Wallet", b =>

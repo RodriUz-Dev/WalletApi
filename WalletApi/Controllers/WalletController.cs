@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WalletApi.Application.DTOs.Request;
@@ -12,6 +13,7 @@ using WalletApi.Infrastructure.Persistence;
 namespace WalletApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class WalletController : ControllerBase
     {

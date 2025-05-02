@@ -12,8 +12,8 @@ using WalletApi.Infrastructure.Persistence;
 namespace WalletApi.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250330092832_Add-Wallet-DocumentId")]
-    partial class AddWalletDocumentId
+    [Migration("20250430054436_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,7 +43,7 @@ namespace WalletApi.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("WalletId")
+                    b.Property<int>("WalletId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -84,9 +84,13 @@ namespace WalletApi.Infrastructure.Migrations
 
             modelBuilder.Entity("WalletApi.Domain.Entities.TransactionHistory", b =>
                 {
-                    b.HasOne("WalletApi.Domain.Entities.Wallet", null)
+                    b.HasOne("WalletApi.Domain.Entities.Wallet", "Wallet")
                         .WithMany("TransactionsHistory")
-                        .HasForeignKey("WalletId");
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("WalletApi.Domain.Entities.Wallet", b =>

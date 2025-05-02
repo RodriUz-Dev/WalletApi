@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +34,7 @@ namespace WalletApi.Controllers
             var transactionList = _mapper.Map<List<TransactionHistoryResponseDTO>>(list);
             return StatusCode(StatusCodes.Status200OK, transactionList);
         }
-
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -46,22 +47,37 @@ namespace WalletApi.Controllers
             var transactionHistoryResponse = new TransactionHistoryResponseDTO();
             if (transactionHistory == null)
             {
-                return StatusCode(StatusCodes.Status200OK, new { isSuccess = false, transactionHistoryResponse });
+                return StatusCode(StatusCodes.Status200OK, new { isSuccess = false, transactionHistoryResponse = transactionHistoryResponse });
             }
             transactionHistoryResponse = _mapper.Map<TransactionHistoryResponseDTO>(transactionHistory);
 
-            return StatusCode(StatusCodes.Status200OK, new { isSuccess = true, transactionHistoryResponse });
+            return StatusCode(StatusCodes.Status200OK, new TransactionResponseDTO
+            {
+                isSuccess = true,
+                transactionHistoryResponse = transactionHistoryResponse
+            });
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] TransactionHistoryRequestDTO transactionHistoryRequestDTO)
         {
             var transactionHistory = _mapper.Map<TransactionHistory>(transactionHistoryRequestDTO);
 
-            if (transactionHistory == null || transactionHistory.Amount <= 0)
+            if (transactionHistoryRequestDTO == null || transactionHistoryRequestDTO.WalletId <= 0)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new { isSuccess = false });
-            }                       
+                return StatusCode(StatusCodes.Status400BadRequest, new { isSuccess = false, message = "The wallet id is required." });
+            }
+
+            if (transactionHistory.Amount <= 0)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new { isSuccess = false, message = "The amount must be greater than 0."});
+            }    
+            
+            if(transactionHistory.Type.ToLower() != "debit" && transactionHistory.Type.ToLower() != "credit")
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new { isSuccess = false, message = "The type must be either 'debit' or 'credit'." });
+            }
 
             Wallet? wallet = await _walletService.GetByIdAsync(transactionHistory.WalletId);
 
